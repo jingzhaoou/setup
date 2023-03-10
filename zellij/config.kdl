@@ -1,0 +1,4 @@
+simplified_ui true
+default_layout "compact"
+default_shell "zsh"
+pane_frames false
