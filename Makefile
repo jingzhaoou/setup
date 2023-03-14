@@ -24,8 +24,9 @@ nvim_tar: nvim_rc
 	tar -C ~/local -xzvf nvim-linux64.tar.gz && \
 	rm -rf nvim-linux64.tar.gz ~/.config/nvim && \
 	git clone https://github.com/AstroNvim/AstroNvim ~/.config/nvim && \
-	git clone --depth 1 https://github.com/wbthomason/packer.nvim ${HOME}/.local/share/nvim/site/pack/packer/start/packer.nvim && \
-	~/local/nvim-linux64/bin/nvim --headless +PackerSync +q
+	rm -rf ~/.config/nvim/lua/user && \
+	mkdir -p ~/.config/nvim/lua/user && \
+	cp nvim/init.lua ~/.config/nvim/lua/user/init.lua
 
 nvim_src: nvim_rc
 	wget https://github.com/neovim/neovim/archive/refs/tags/stable.tar.gz && \
