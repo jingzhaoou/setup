@@ -11,8 +11,10 @@ SHELL_RC:=${HOME}/.zshrc
 all: cargo_tools
 
 nvim_appimage: 
+	rm -rf ~/local/bin/nvim* && \
 	wget https://github.com/neovim/neovim/releases/download/stable/nvim.appimage -O ~/local/bin/nvim.appimage && \
 	chmod +x ${HOME}/local/bin/nvim.appimage && \
+	ln -s ${HOME}/local/bin/nvim.appimage ${HOME}/local/bin/nvim
 ifeq ($(strip $(shell grep "alias vi=nvim.appimage" ${SHELL_RC})),)
 	echo 'alias vi=nvim.appimage' >> ${SHELL_RC}
 endif
@@ -117,3 +119,4 @@ helix:
 	git clone https://github.com/rust-lang/rust-analyzer.git && cd rust-analyzer && 
 	cargo xtask install --server && \
 	cd .. && rm -rf rust-analyzer
+
