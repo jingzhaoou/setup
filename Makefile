@@ -10,23 +10,20 @@ SHELL_RC:=${HOME}/.zshrc
 
 all: cargo_tools
 
-nvim_appimage:
+nvim_appimage: 
 	wget https://github.com/neovim/neovim/releases/download/stable/nvim.appimage -O ~/local/bin/nvim.appimage && \
 	chmod +x ${HOME}/local/bin/nvim.appimage && \
-	rm -rf ${HOME}/.config/nvim && \
-	git clone https://github.com/AstroNvim/AstroNvim ~/.config/nvim && \
-	git clone --depth 1 https://github.com/wbthomason/packer.nvim ${HOME}/.local/share/nvim/site/pack/packer/start/packer.nvim && \
-	~/local/bin/nvim.appimage --headless +PackerSync +q
+	${MAKE} nvim_user
+ifeq ($(strip $(shell grep "alias vi=nvim.appimage" ${SHELL_RC})),)
+	echo 'alias vi=nvim.appimage' >> ${SHELL_RC}
+endif
 
-nvim_tar: nvim_rc
+nvim_tar: 
 	rm -rf ~/local/nvim-linux64 && \
 	wget https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz && \
 	tar -C ~/local -xzvf nvim-linux64.tar.gz && \
-	rm -rf nvim-linux64.tar.gz ~/.config/nvim && \
-	git clone https://github.com/AstroNvim/AstroNvim ~/.config/nvim && \
-	rm -rf ~/.config/nvim/lua/user && \
-	mkdir -p ~/.config/nvim/lua/user && \
-	cp nvim/init.lua ~/.config/nvim/lua/user/init.lua
+	rm -rf nvim-linux64.tar.gz
+	${MAKE} nvim_user nvim_rc
 
 nvim_src: nvim_rc
 	wget https://github.com/neovim/neovim/archive/refs/tags/stable.tar.gz && \
@@ -34,11 +31,15 @@ nvim_src: nvim_rc
 	cd neovim-stable && \
 	make CMAKE_BUILD_TYPE=Release && \
 	make CMAKE_INSTALL_PREFIX=${HOME}/local/nvim-linux64 install && \
-	cd .. && rm -rf stable.tar.gz* neovim-stable
+	cd .. && rm -rf stable.tar.gz* neovim-stable && \
+	${MAKE} nvim_user nvim_rc
 
 nvim_user:
-	 rm -rf ~/.config/nvim/lua/user && \
-	 git clone https://gist.github.com/jingzhaoou/12bf3bde9f6d956c3a5fe44459e29c35 ~/.config/nvim/lua/user
+	rm -rf ${HOME}/.config/nvim && \
+	git clone https://github.com/AstroNvim/AstroNvim ~/.config/nvim && \
+	rm -rf ~/.config/nvim/lua/user && \
+	mkdir -p ~/.config/nvim/lua/user && \
+	cp nvim/init.lua ~/.config/nvim/lua/user/init.lua
 
 cmake_bin:
 	wget -O cmake.tar.gz https://github.com/Kitware/CMake/releases/download/v3.25.0/cmake-3.25.0-linux-${ARCH}.tar.gz && \
