@@ -7,11 +7,10 @@ else
 endif
 
 SHELL_RC:=${HOME}/.zshrc
-TMUX_CONF:=${HOME}/.tmux.conf
 
 all: cargo_tools
 
-nvim_appimage: tmux
+nvim_appimage:
 	wget https://github.com/neovim/neovim/releases/download/stable/nvim.appimage -O ~/local/bin/nvim.appimage && \
 	chmod +x ${HOME}/local/bin/nvim.appimage && \
 	rm -rf ${HOME}/.config/nvim && \
@@ -19,7 +18,7 @@ nvim_appimage: tmux
 	git clone --depth 1 https://github.com/wbthomason/packer.nvim ${HOME}/.local/share/nvim/site/pack/packer/start/packer.nvim && \
 	~/local/bin/nvim.appimage --headless +PackerSync +q
 
-nvim_tar: nvim_rc tmux
+nvim_tar: nvim_rc
 	rm -rf ~/local/nvim-linux64 && \
 	wget https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz && \
 	tar -C ~/local -xzvf nvim-linux64.tar.gz && \
@@ -28,7 +27,7 @@ nvim_tar: nvim_rc tmux
 	git clone --depth 1 https://github.com/wbthomason/packer.nvim ${HOME}/.local/share/nvim/site/pack/packer/start/packer.nvim && \
 	~/local/nvim-linux64/bin/nvim --headless +PackerSync +q
 
-nvim_src: nvim_rc tmux
+nvim_src: nvim_rc
 	wget https://github.com/neovim/neovim/archive/refs/tags/stable.tar.gz && \
 	tar xvf stable.tar.gz && \
 	cd neovim-stable && \
@@ -82,15 +81,6 @@ ifeq ($(strip $(shell grep '$${HOME}/.cargo/bin' ${SHELL_RC})),)
 	echo 'export PATH=$${HOME}/.cargo/bin:$${PATH}' >> ${SHELL_RC}
 endif
 
-cargo_mcfly: rust
-	rm -rf mcfly && git clone https://github.com/cantino/mcfly && cd mcfly && cargo install --path . && cd .. && rm -rf mcfly
-	rm -rf ${HOME}/.cargo/registry
-ifeq ($(strip $(shell grep "export MCFLY_DISABLE_MENU=TRUE" ${SHELL_RC})),)
-	echo 'eval "$$(mcfly init zsh)"' >> ${SHELL_RC}
-	echo 'export MCFLY_DISABLE_MENU=TRUE' >> ${SHELL_RC}
-	echo 'export MCFLY_RESULTS_SORT=LAST_RUN' >> ${SHELL_RC}
-endif
-
 cargo_tools: rust
 	cargo install --bins --force --locked ripgrep lsd watchexec-cli bat zoxide fd-find zellij && \
 	rm -rf ${HOME}/.config/zellij && \
@@ -113,13 +103,15 @@ ifeq ($(strip $(shell grep "alias ls=lsd" ${SHELL_RC})),)
 	echo 'export FZF_DEFAULT_OPTS="--ansi"' >> ${SHELL_RC}
 endif
 
-tmux:
-ifeq ($(strip $(shell grep "bind -n S-Up select-pane -t :.-" ${TMUX_CONF})),)
-	echo 'bind -n S-Up select-pane -t :.-' >> ${TMUX_CONF}
-endif
-ifeq ($(strip $(shell grep "bind -n S-Down resize-pane -Z" ${TMUX_CONF})),)
-	echo "bind -n S-Down resize-pane -Z" >> ${TMUX_CONF}
-endif
-ifeq ($(strip $(shell grep "set -s set-clipboard on" ${TMUX_CONF})),)
-	echo 'set -s set-clipboard on' >> ${TMUX_CONF}
-endif
+helix:
+	git clone https://github.com/helix-editor/helix && \
+	cd helix && \
+	cargo install --locked --force --path helix-term && \
+	rm -rf ~/.config/helix && \
+	mkdir -p ~/.config/helix && \
+	mv runtime ~/.config/helix/runtime && \
+	cd .. && rm -rf helix
+	cp helix-config/config.toml ~/.config/helix/config.toml
+	git clone https://github.com/rust-lang/rust-analyzer.git && cd rust-analyzer && 
+	cargo xtask install --server && \
+	cd .. && rm -rf rust-analyzer
