@@ -20,6 +20,8 @@ local config = {
     vim.keymap.set('n', '<leader>cc', '<leader>c_', { remap = true })
     vim.keymap.set('x', '<leader>c', require('osc52').copy_visual)
 
+    vim.wo.relativenumber = false
+
     vim.cmd([[
         " set tabstop=2 shiftwidth=2
         " autocmd FileType python set shiftwidth=2 tabstop=2 expandtab
