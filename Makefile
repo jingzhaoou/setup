@@ -13,7 +13,6 @@ all: cargo_tools
 nvim_appimage: 
 	wget https://github.com/neovim/neovim/releases/download/stable/nvim.appimage -O ~/local/bin/nvim.appimage && \
 	chmod +x ${HOME}/local/bin/nvim.appimage && \
-	${MAKE} nvim_user
 ifeq ($(strip $(shell grep "alias vi=nvim.appimage" ${SHELL_RC})),)
 	echo 'alias vi=nvim.appimage' >> ${SHELL_RC}
 endif
@@ -23,7 +22,7 @@ nvim_tar:
 	wget https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz && \
 	tar -C ~/local -xzvf nvim-linux64.tar.gz && \
 	rm -rf nvim-linux64.tar.gz
-	${MAKE} nvim_user nvim_rc
+	${MAKE} nvim_rc
 
 nvim_src: nvim_rc
 	wget https://github.com/neovim/neovim/archive/refs/tags/stable.tar.gz && \
@@ -32,14 +31,15 @@ nvim_src: nvim_rc
 	make CMAKE_BUILD_TYPE=Release && \
 	make CMAKE_INSTALL_PREFIX=${HOME}/local/nvim-linux64 install && \
 	cd .. && rm -rf stable.tar.gz* neovim-stable && \
-	${MAKE} nvim_user nvim_rc
+	${MAKE} nvim_rc
 
 nvim_user:
 	rm -rf ${HOME}/.config/nvim && \
 	git clone https://github.com/AstroNvim/AstroNvim ~/.config/nvim && \
 	rm -rf ~/.config/nvim/lua/user && \
 	mkdir -p ~/.config/nvim/lua/user && \
-	cp nvim/init.lua ~/.config/nvim/lua/user/init.lua
+	cp nvim/init.lua ~/.config/nvim/lua/user/init.lua && \
+	nvim "+LspInstall c++ python rust" && nvim "+TSInstall cpp python rust"
 
 cmake_bin:
 	wget -O cmake.tar.gz https://github.com/Kitware/CMake/releases/download/v3.25.0/cmake-3.25.0-linux-${ARCH}.tar.gz && \
