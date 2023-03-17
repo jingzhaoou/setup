@@ -89,7 +89,7 @@ endif
 cargo_tools: rust
 	@# cargo install --bins --force --locked ripgrep lsd watchexec-cli bat zoxide fd-find zellij
 	cargo install cargo-binstall && \
-	cargo binstall --no-confirm --no-symlinks ripgrep lsd watchexec-cli bat zoxide fd-find zellij && \
+	cargo binstall --no-confirm --no-symlinks --force ripgrep lsd watchexec-cli bat zoxide fd-find zellij && \
 	rm -rf ${HOME}/.config/zellij && \
 	cp -r zellij ${HOME}/.config/
 ifeq (,$(wildcard ${HOME}/.fzf))
