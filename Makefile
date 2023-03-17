@@ -83,10 +83,13 @@ rust:
 	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal
 ifeq ($(strip $(shell grep '$${HOME}/.cargo/bin' ${SHELL_RC})),)
 	echo 'export PATH=$${HOME}/.cargo/bin:$${PATH}' >> ${SHELL_RC}
+	export PATH=${HOME}/.cargo/bin:${PATH}
 endif
 
 cargo_tools: rust
-	cargo install --bins --force --locked ripgrep lsd watchexec-cli bat zoxide fd-find zellij && \
+	@# cargo install --bins --force --locked ripgrep lsd watchexec-cli bat zoxide fd-find zellij
+	cargo install cargo-binstall && \
+	cargo binstall --no-confirm --no-symlinks ripgrep lsd watchexec-cli bat zoxide fd-find zellij && \
 	rm -rf ${HOME}/.config/zellij && \
 	cp -r zellij ${HOME}/.config/
 ifeq (,$(wildcard ${HOME}/.fzf))
