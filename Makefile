@@ -8,7 +8,7 @@ endif
 
 SHELL_RC:=${HOME}/.zshrc
 
-all: cargo_tools
+all: cargo_tools_install
 
 nvim_appimage: 
 	rm -rf ~/local/bin/nvim* && \
