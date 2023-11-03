@@ -96,6 +96,7 @@ cargo_tools_install: rust
 	${MAKE} cargo_tools_common
 
 cargo_tools_common:
+	mkdir -p ${HOME}/.config && \
 	rm -rf ${HOME}/.config/zellij && \
 	cp -r zellij ${HOME}/.config/
 ifeq (,$(wildcard ${HOME}/.fzf))
