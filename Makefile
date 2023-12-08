@@ -53,13 +53,22 @@ ifeq ($(strip $(shell grep '$${HOME}/local/cmake/bin' ${SHELL_RC})),)
 endif
 
 miniconda3:
-	[ ! -d "${HOME}/local/miniconda3" ] && \
-	curl -fsSL -v -o ~/miniconda.sh -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-${ARCH}.sh && \
-	chmod +x ~/miniconda.sh && bash ~/miniconda.sh -b -p ${HOME}/local/miniconda3 && rm ${HOME}/miniconda.sh
-ifeq ($(strip $(shell grep '$${HOME}/local/miniconda3/bin' ${SHELL_RC})),)
-	echo 'export PATH=$${HOME}/local/miniconda3/bin:$${PATH}' >> ${SHELL_RC}
-endif
- 
+	[ ! -d "${HOME}/miniconda3" ] && \
+	mkdir -p ${HOME}/miniconda3 && \
+	wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ${HOME}/miniconda3/miniconda.sh && \
+	bash ${HOME}/miniconda3/miniconda.sh -b -u -p ${HOME}/miniconda3 && \
+	rm -rf ${HOME}/miniconda3/miniconda.sh && \
+	${HOME}/miniconda3/bin/conda init zsh
+
+cuda:
+	wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pinsudo && \
+	mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600 && \
+	wget https://developer.download.nvidia.com/compute/cuda/12.1.1/local_installers/cuda-repo-ubuntu2204-12-1-local_12.1.1-530.30.02-1_amd64.debsudo && \
+	dpkg -i cuda-repo-ubuntu2204-12-1-local_12.1.1-530.30.02-1_amd64.deb && \
+	sudo cp /var/cuda-repo-ubuntu2204-12-1-local/cuda-*-keyring.gpg /usr/share/keyrings/ && \
+	sudo apt-get update && \
+	sudo apt-get -y install cuda
+
 aws: shell_rc
 	curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
 	unzip awscliv2.zip && \
