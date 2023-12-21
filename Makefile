@@ -69,6 +69,9 @@ cuda:
 	sudo apt-get update && \
 	sudo apt-get -y install cuda
 
+pytorch_12_1:
+	conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
+
 aws: shell_rc
 	curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
 	unzip awscliv2.zip && \
