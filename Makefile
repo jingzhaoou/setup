@@ -112,7 +112,7 @@ cargo_tools: rust
 	${MAKE} cargo_tools_common
 
 cargo_tools_install: rust
-	cargo install --bins --force --locked ripgrep lsd watchexec-cli bat zoxide fd-find zellij && \
+	cargo install --bins --force --locked ripgrep sd lsd watchexec-cli bat zoxide fd-find zellij && \
 	${MAKE} cargo_tools_common
 
 cargo_tools_common:
