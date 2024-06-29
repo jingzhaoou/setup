@@ -1,4 +1,4 @@
-.PHONY=tmux nvim_appimage nvim_tar nvim_src nvim_user cmake carapace
+.PHONY=tmux nvim_appimage nvim_tar nvim_src nvim_user cmake carapace cp-gitconfig
 
 ifeq ($(strip $(shell uname -a | grep aarch64)),)
 	ARCH:=x86_64
@@ -8,7 +8,7 @@ endif
 
 SHELL_RC:=${HOME}/.zshrc
 
-all: cargo_tools carapace
+all: cargo_tools carapace cp-gitconfig
 
 nvim_appimage: 
 	rm -rf ~/local/bin/nvim* && \
@@ -127,6 +127,9 @@ cargo_tools_install: rust
 
 zenith:
 	cargo install --features nvidia --git https://github.com/bvaisvil/zenith.git
+
+cp-gitconfig:
+	[ ! -f "${HOME}/.gitconfig" ] && cp gitconfig ${HOME}/.gitconfig
 
 cargo_tools_common:
 	mkdir -p ${HOME}/.config && \
