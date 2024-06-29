@@ -8,7 +8,7 @@ endif
 
 SHELL_RC:=${HOME}/.zshrc
 
-all: cargo_tools carapace cp-gitconfig
+all: cargo_tools_install carapace cp-gitconfig
 
 nvim_appimage: 
 	rm -rf ~/local/bin/nvim* && \
