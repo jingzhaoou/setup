@@ -90,7 +90,8 @@ carapace:
 ifeq ($(strip $(shell grep "export CARAPACE_BRIDGES" ${SHELL_RC})),)
 	wget "https://github.com/carapace-sh/carapace-bin/releases/latest/download/carapace-bin_linux_amd64.tar.gz" -O "carapace-bin_linux_amd64.tar.gz" && \
 	tar -C ~/local/bin -xvf carapace-bin_linux_amd64.tar.gz && \
-    cat carapace.sh >> ${SHELL_RC}
+	rm -rf carapace-bin_linux_amd64.tar.gz && \
+    cat carapace.txt >> ${SHELL_RC}
 endif
 
 nvim_rc:
