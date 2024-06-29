@@ -129,7 +129,7 @@ zenith:
 	cargo install --features nvidia --git https://github.com/bvaisvil/zenith.git
 
 cp-gitconfig:
-	[ ! -f "${HOME}/.gitconfig" ] && cp gitconfig ${HOME}/.gitconfig
+	if [ ! -f "${HOME}/.gitconfig" ]; then cp gitconfig ${HOME}/.gitconfig; fi
 
 cargo_tools_common:
 	mkdir -p ${HOME}/.config && \
