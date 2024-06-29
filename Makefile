@@ -1,4 +1,4 @@
-.PHONY=tmux nvim_appimage nvim_tar nvim_src nvim_user cmake
+.PHONY=tmux nvim_appimage nvim_tar nvim_src nvim_user cmake carapace
 
 ifeq ($(strip $(shell uname -a | grep aarch64)),)
 	ARCH:=x86_64
@@ -85,6 +85,13 @@ aws: shell_rc
 	unzip awscliv2.zip && \
 	sudo ./aws/install --bin-dir ${HOME}/local/bin --install-dir ${HOME}/local/aws-cli --update && \
 	rm -rf aws awscliv2.zip*
+
+carapace:
+ifeq ($(strip $(shell grep "export CARAPACE_BRIDGES" ${SHELL_RC})),)
+	wget "https://github.com/carapace-sh/carapace-bin/releases/latest/download/carapace-bin_linux_amd64.tar.gz" -O "carapace-bin_linux_amd64.tar.gz" && \
+	tar -C ~/local/bin -xvf carapace-bin_linux_amd64.tar.gz && \
+    cat carapace.sh >> ${SHELL_RC}
+endif
 
 nvim_rc:
 ifeq ($(strip $(shell grep '$${HOME}/local/nvim-linux64/bin' ${SHELL_RC})),)
