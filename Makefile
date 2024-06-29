@@ -8,7 +8,7 @@ endif
 
 SHELL_RC:=${HOME}/.zshrc
 
-all: cargo_tools_install carapace
+all: cargo_tools carapace
 
 nvim_appimage: 
 	rm -rf ~/local/bin/nvim* && \
@@ -114,7 +114,7 @@ ifeq ($(strip $(shell grep '$${HOME}/.cargo/bin' ${SHELL_RC})),)
 	export PATH=${HOME}/.cargo/bin:${PATH}
 endif
 
-CARGO_TOOLS := ripgrep sd lsd watchexec-cli bat zoxide fd-find zellij git-delta zenish pueue
+CARGO_TOOLS := ripgrep sd lsd watchexec-cli bat zoxide fd-find zellij git-delta pueue
 
 cargo_tools: rust
 	cargo install cargo-binstall && \
@@ -124,6 +124,9 @@ cargo_tools: rust
 cargo_tools_install: rust
 	cargo install --bins --force --locked ${CARGO_TOOLS} && \
 	${MAKE} cargo_tools_common
+
+zenith:
+	cargo install --features nvidia --git https://github.com/bvaisvil/zenith.git
 
 cargo_tools_common:
 	mkdir -p ${HOME}/.config && \
