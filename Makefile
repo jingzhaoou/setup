@@ -8,7 +8,7 @@ endif
 
 SHELL_RC:=${HOME}/.zshrc
 
-all: cargo_tools_install
+all: cargo_tools_install carapace
 
 nvim_appimage: 
 	rm -rf ~/local/bin/nvim* && \
@@ -114,13 +114,15 @@ ifeq ($(strip $(shell grep '$${HOME}/.cargo/bin' ${SHELL_RC})),)
 	export PATH=${HOME}/.cargo/bin:${PATH}
 endif
 
+CARGO_TOOLS := ripgrep sd lsd watchexec-cli bat zoxide fd-find zellij git-delta zenish pueue
+
 cargo_tools: rust
 	cargo install cargo-binstall && \
-	cargo binstall --no-confirm --no-symlinks --force ripgrep lsd watchexec-cli bat zoxide fd-find zellij git-delta && \
+	cargo binstall --no-confirm --no-symlinks --force ${CARGO_TOOLS} && \
 	${MAKE} cargo_tools_common
 
 cargo_tools_install: rust
-	cargo install --bins --force --locked ripgrep sd lsd watchexec-cli bat zoxide fd-find zellij git-delta && \
+	cargo install --bins --force --locked ${CARGO_TOOLS} && \
 	${MAKE} cargo_tools_common
 
 cargo_tools_common:
