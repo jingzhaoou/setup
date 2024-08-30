@@ -8,7 +8,7 @@ endif
 
 SHELL_RC:=${HOME}/.zshrc
 
-all: cargo_tools_install carapace cp-gitconfig
+all: cargo_tools_install cp-gitconfig
 
 nvim_appimage: 
 	rm -rf ~/local/bin/nvim* && \
@@ -157,16 +157,4 @@ ifeq ($(strip $(shell grep "alias ls=lsd" ${SHELL_RC})),)
 	echo 'export FZF_DEFAULT_OPTS="--ansi"' >> ${SHELL_RC}
 endif
 
-helix:
-	git clone https://github.com/helix-editor/helix && \
-	cd helix && \
-	cargo install --locked --force --path helix-term && \
-	rm -rf ~/.config/helix && \
-	mkdir -p ~/.config/helix && \
-	mv runtime ~/.config/helix/runtime && \
-	cd .. && rm -rf helix
-	cp helix-config/config.toml ~/.config/helix/config.toml
-	git clone https://github.com/rust-lang/rust-analyzer.git && cd rust-analyzer && 
-	cargo xtask install --server && \
-	cd .. && rm -rf rust-analyzer
 
