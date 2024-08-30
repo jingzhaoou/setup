@@ -94,6 +94,10 @@ ifeq ($(strip $(shell grep "export CARAPACE_BRIDGES" ${SHELL_RC})),)
     cat carapace.txt >> ${SHELL_RC}
 endif
 
+zsh:
+	sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+	git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+
 nvim_rc:
 ifeq ($(strip $(shell grep '$${HOME}/local/nvim-linux64/bin' ${SHELL_RC})),)
 	echo 'export PATH=$${HOME}/local/nvim-linux64/bin:$${PATH}' >> ${SHELL_RC}
