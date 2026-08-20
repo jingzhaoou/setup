@@ -1,4 +1,5 @@
 .PHONY=tmux nvim_appimage nvim_tar nvim_src nvim_user cmake carapace cp-gitconfig
+.PHONY: aws shell_rc
 
 ifeq ($(strip $(shell uname -a | grep aarch64)),)
 	ARCH:=x86_64
@@ -81,10 +82,14 @@ pytorch_12_1:
 	conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
 
 aws: shell_rc
-	curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
-	unzip awscliv2.zip && \
-	sudo ./aws/install --bin-dir ${HOME}/local/bin --install-dir ${HOME}/local/aws-cli --update && \
-	rm -rf aws awscliv2.zip*
+	aws_tmp_dir="$$(mktemp -d)" && \
+	trap 'rm -rf "$${aws_tmp_dir}"' EXIT && \
+	curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-${ARCH}.zip" -o "$${aws_tmp_dir}/awscliv2.zip" && \
+	unzip -q "$${aws_tmp_dir}/awscliv2.zip" -d "$${aws_tmp_dir}" && \
+	mkdir -p "${HOME}/.local/bin" && \
+	if [ -x "${HOME}/.local/aws-cli/v2/current/bin/aws" ]; then aws_update=--update; fi && \
+	"$${aws_tmp_dir}/aws/install" --bin-dir "${HOME}/.local/bin" --install-dir "${HOME}/.local/aws-cli" $${aws_update} && \
+	"${HOME}/.local/bin/aws" --version
 
 carapace:
 ifeq ($(strip $(shell grep "export CARAPACE_BRIDGES" ${SHELL_RC})),)
@@ -107,8 +112,8 @@ ifeq ($(strip $(shell grep "alias vi=nvim" ${SHELL_RC})),)
 endif
 
 shell_rc:
-ifeq ($(strip $(shell grep '$${HOME}/local/bin' ${SHELL_RC})),)
-	echo 'export PATH=$${HOME}/local/bin:$${PATH}' >> ${SHELL_RC}
+ifeq ($(strip $(shell grep '$${HOME}/.local/bin' ${SHELL_RC})),)
+	echo 'export PATH=$${HOME}/.local/bin:$${PATH}' >> ${SHELL_RC}
 endif
 
 rust:
@@ -156,5 +161,3 @@ ifeq ($(strip $(shell grep "alias ls=lsd" ${SHELL_RC})),)
 	echo 'export FZF_DEFAULT_COMMAND="fd --type f"' >> ${SHELL_RC}
 	echo 'export FZF_DEFAULT_OPTS="--ansi"' >> ${SHELL_RC}
 endif
-
-
